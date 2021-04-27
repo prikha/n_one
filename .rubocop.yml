@@ -1,0 +1,13 @@
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 2.5
+Metrics/ClassLength:
+  Exclude:
+    - 'test/**/*'
+Metrics/MethodLength:
+  Exclude:
+    - 'test/**/*'
+
+Lint/AssignmentInCondition:
+  Exclude:
+    - 'lib/n_one/mysql_query.rb'
