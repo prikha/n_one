@@ -13,17 +13,18 @@ module NOne
     end
 
     def message
-      @report.map do |detected_case|
-        <<~MESSAGE
-          SQL query called #{detected_case[:count]} times
-          ---
-          #{detected_case[:sql]}
+      "N+1 queries detected(count: #{@report.size}) \n" +
+        @report.map do |detected_case|
+          <<~MESSAGE
+            SQL query called #{detected_case[:count]} times
+            ---
+            #{detected_case[:sql].join("\n")}
 
-          Backtrace:
-          ---
-          #{detected_case[:caller]}
-        MESSAGE
-      end.join("\n\n")
+            Backtrace:
+            ---
+            #{detected_case[:caller].join("\n")}
+          MESSAGE
+        end.join("\n\n")
     end
   end
 
