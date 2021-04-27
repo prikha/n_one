@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     n_one (1.0.0)
+      pg_query
 
 GEM
   remote: https://rubygems.org/
@@ -68,7 +69,6 @@ DEPENDENCIES
   factory_bot
   minitest
   n_one!
-  pg_query
   pry
   rake (~> 13.0)
   rubocop

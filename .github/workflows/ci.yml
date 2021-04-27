@@ -13,3 +13,4 @@ jobs:
           bundler-cache: true
           ruby-version: ${{ matrix.ruby }}
       - run: bundle exec rake test
+      - run: bundle exec rake rubocop
