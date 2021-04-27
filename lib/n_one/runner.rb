@@ -27,7 +27,7 @@ module NOne
     end
 
     def detect_n_plus_ones # rubocop:disable  Metrics/AbcSize, Metrics/MethodLength
-      store.values.select do |statement|
+      store.values.map do |statement|
         next if statement[:count] <= 1
         next if statement[:caller].any? do |backtrace_line|
                   whitelist.any? do |whitelisted|
@@ -42,7 +42,7 @@ module NOne
           count: statement[:count],
           caller: compact_caller
         }
-      end
+      end.compact
     end
 
     def record_sql(&block) # rubocop:disable  Metrics/AbcSize, Metrics/MethodLength
