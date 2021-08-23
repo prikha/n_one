@@ -11,6 +11,3 @@ Metrics/MethodLength:
 Lint/AssignmentInCondition:
   Exclude:
     - 'lib/n_one/mysql_query.rb'
-
-Naming/InclusiveLanguage:
-  Enabled: false
