@@ -6,7 +6,7 @@ require_relative 'n_one/runner'
 
 # Reliable N+1 detection based on sql fingerprinting
 module NOne
-  class NPlusOneDetected < StandardError #:nodoc:
+  class NPlusOneDetected < StandardError # :nodoc:
     def initialize(report)
       @report = report
       super
