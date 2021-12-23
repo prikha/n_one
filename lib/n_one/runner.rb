@@ -2,8 +2,14 @@
 
 module NOne
   class Runner # :nodoc:
-    def initialize(whitelist: [])
+    # Instantiation
+    #
+    # @param whitelist [<String>] frame substrings to be ignored
+    # @param ignore_names [<String>] query names to be ignored
+    #
+    def initialize(whitelist: [], ignore_names: [])
       @whitelist = ['active_record/validations/uniqueness'] + whitelist
+      @ignore_names = ignore_names
     end
 
     def scan(&block)
@@ -20,7 +26,7 @@ module NOne
 
     private
 
-    attr_reader :store, :whitelist
+    attr_reader :store, :whitelist, :ignore_names
 
     def init_store
       @store = {}
@@ -51,6 +57,7 @@ module NOne
         cached = data[:cached]
 
         next if !sql.include?('SELECT') || cached
+        next if ignore_names.include?(data[:name])
 
         sql_fingerprint = Query.fingerprint(sql)
         next unless sql_fingerprint
