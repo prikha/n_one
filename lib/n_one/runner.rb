@@ -2,8 +2,9 @@
 
 module NOne
   class Runner # :nodoc:
-    def initialize(whitelist: [])
+    def initialize(whitelist: [], compact_caller: false)
       @whitelist = ['active_record/validations/uniqueness'] + whitelist
+      @compact_caller = compact_caller
     end
 
     def scan(&block)
@@ -20,7 +21,7 @@ module NOne
 
     private
 
-    attr_reader :store, :whitelist
+    attr_reader :store, :whitelist, :compact_caller
 
     def init_store
       @store = {}
@@ -35,12 +36,10 @@ module NOne
                   end
                 end
 
-        compact_caller = statement[:caller].reject { |line| line.include?(::Bundler.bundle_path.to_s) }
-
         {
           sql: statement[:sql],
           count: statement[:count],
-          caller: compact_caller
+          caller: prepare_caller(statement[:caller])
         }
       end.compact
     end
@@ -72,6 +71,12 @@ module NOne
       block.call
     ensure
       ActiveSupport::Notifications.unsubscribe(subscriber)
+    end
+
+    def prepare_caller(caller)
+      return caller unless compact_caller
+
+      caller.reject { |line| line.include?(::Bundler.bundle_path.to_s) }
     end
   end
 end
