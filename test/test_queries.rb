@@ -80,4 +80,16 @@ class TestQueries < Minitest::Test
       end
     end
   end
+
+  def test_ignore_schema_names
+    assert_raises NOne::NPlusOneDetected do
+      NOne.scan! do
+        10.times { ActiveRecord::Base.connection.execute('SELECT COUNT(*) FROM chairs', 'COUNTS') }
+      end
+    end
+
+    NOne.scan!(ignore_names: ['COUNTS']) do
+      10.times { ActiveRecord::Base.connection.execute('SELECT COUNT(*) FROM chairs', 'COUNTS') }
+    end
+  end
 end

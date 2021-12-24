@@ -30,11 +30,11 @@ module NOne
 
   module_function
 
-  def scan(whitelist: [], &block)
-    Runner.new(whitelist: whitelist).scan(&block)
+  def scan(**args, &block)
+    Runner.new(**args).scan(&block)
   end
 
-  def scan!(whitelist: [], &block)
-    Runner.new(whitelist: whitelist).scan!(&block)
+  def scan!(**args, &block)
+    Runner.new(**args).scan!(&block)
   end
 end

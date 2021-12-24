@@ -74,10 +74,22 @@ end
 Ignore notifications for call stacks containing one or more substrings:
 
 ```ruby
-  NOne.scan!(whitelist: 'myapp/lib/known_n_plus_ones/') do
+  NOne.scan!(whitelist: ['myapp/lib/known_n_plus_ones/']) do
     example.run
   end
 ```
+
+## Ignore names
+
+Ignore queries with names:
+
+```ruby
+  NOne.scan!(ignore_names: ['SCHEMA']) do
+    example.run
+  end
+```
+
+It will skip schema queries(e.g. for column names of a given table)
 
 ## Contributing
 
