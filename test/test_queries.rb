@@ -20,11 +20,35 @@ class TestQueries < Minitest::Test
     assert(report.size.zero?)
   end
 
-  def assert_n_plus_one(count: 1, whitelist: [], &block)
-    report = NOne.scan(whitelist: whitelist) do
+  def assert_n_plus_one(count: 1, whitelist: [], stacktrace_sanitizer: nil, &block)
+    report = NOne.scan(whitelist: whitelist, stacktrace_sanitizer: stacktrace_sanitizer) do
       block.call
     end
     assert(report.size == count)
+  end
+
+  def trigger_ar_compiled_delegation
+    klass = Class.new(Chair) do
+      def self.some_records
+        first(5)
+      end
+    end
+
+    2.times { klass.all.some_records }
+  end
+
+  def test_stacktrace_sanitizer
+    assert_no_n_plus_one do
+      trigger_ar_compiled_delegation
+    end
+
+    sanitizer = lambda do |stacktrace|
+      stacktrace.reject { |s| s.include?('/active_record/relation/delegation.rb') }
+    end
+
+    assert_n_plus_one(stacktrace_sanitizer: sanitizer) do
+      trigger_ar_compiled_delegation
+    end
   end
 
   def test_clean_scan

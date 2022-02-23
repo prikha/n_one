@@ -74,9 +74,9 @@ end
 Ignore notifications for call stacks containing one or more substrings:
 
 ```ruby
-  NOne.scan!(whitelist: ['myapp/lib/known_n_plus_ones/']) do
-    example.run
-  end
+NOne.scan!(whitelist: ['myapp/lib/known_n_plus_ones/']) do
+  example.run
+end
 ```
 
 ## Ignore names
@@ -84,12 +84,41 @@ Ignore notifications for call stacks containing one or more substrings:
 Ignore queries with names:
 
 ```ruby
-  NOne.scan!(ignore_names: ['SCHEMA']) do
-    example.run
-  end
+NOne.scan!(ignore_names: ['SCHEMA']) do
+  example.run
+end
 ```
 
 It will skip schema queries(e.g. for column names of a given table)
+
+## Stack trace sanitizing
+
+Sanitize the call stack trace that is used to calculate the query fingerprint:
+
+```ruby
+sanitizer = lambda do |stacktrace|
+  stacktrace.reject { |s| s.include?('/active_record/relation/delegation.rb') }
+end
+
+NOne.scan!(stacktrace_sanitizer: sanitizer) do
+  example.run
+end
+```
+
+Consider the following example:
+
+```ruby
+class Foo < ActiveRecord::Base
+  def self.bar
+    first(5)
+  end
+end
+
+2.times { Foo.all.bar }
+```
+
+The subsequent `Foo.all.bar` call here will not be recognized as an N+1 query since it will have a different call stack trace (see the reason [here](https://github.com/rails/rails/blob/9a400d808bdbebd5ea50cebc79bde591d2669017/activerecord/lib/active_record/relation/delegation.rb#L82-L85)).
+This can be fixed with the `stacktrace_sanitizer` option as described above.
 
 ## Contributing
 
