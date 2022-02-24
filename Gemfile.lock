@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    n_one (1.0.2)
+    n_one (1.0.3)
       pg_query
 
 GEM
